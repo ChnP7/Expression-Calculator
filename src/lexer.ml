@@ -5,25 +5,32 @@
  **************************************************)
 
 open Tokentypes
-
+open Helpers
 
 exception InvalidInputException of string
-
+		
 
 let rec tok_helper input pos =
 	if pos >= (String.length input) 
 		then []
 	else
-		
+			
+		(* Case: minus sign. Since minus and negative share the same symbol, a character will be a minus token if 
+		 * 1. The - character is not the first character in the string
+		 * 2. The - character comes after a number character [0-9] 
+		 * Otherwise, it will be treated as a negative number symbol *)
+		if (Str.string_match (Str.regexp "-")) input pos && pos != 0  && (Str.string_match (Str.regexp "[0-9]") input (pos-1)) then
+			(Token_Minus) :: (tok_helper input (pos + 1))
+			
 		(* Case: Floating point *)
-		if (Str.string_match (Str.regexp "-?[0-9]*[.][0-9]+")) input pos then
+		else if (Str.string_match (Str.regexp "-?[0-9]*[.][0-9]+")) input pos then
 			let tok = (Str.matched_string input) in
 			let len = (String.length tok) in
 			let num = float_of_string tok in
 			(Token_Float num) :: (tok_helper input (pos + len))
 		
 		(* Case: Integer *)
-		else if (Str.string_match (Str.regexp "-?[0-9]+")) input pos then
+	    else if (Str.string_match (Str.regexp "-?[0-9]+")) input pos then
 			let tok = (Str.matched_string input) in
 			let len = (String.length tok) in
 			let num = int_of_string tok in
@@ -32,10 +39,6 @@ let rec tok_helper input pos =
 		(* Case: plus sign *)
 		else if (Str.string_match (Str.regexp "\\+")) input pos then 
 			(Token_Plus) :: (tok_helper input (pos + 1)) 
-			
-		(* Case: minus sign *)
-		else if (Str.string_match (Str.regexp "-")) input pos then
-			(Token_Minus) :: (tok_helper input (pos + 1))
 			
 		(* Case: multiplication sign *)
 		else if (Str.string_match (Str.regexp "\\*")) input pos then
@@ -56,15 +59,10 @@ let rec tok_helper input pos =
 		(* Case: right parenthesis *)
 		else if (Str.string_match (Str.regexp ")")) input pos then
 			(Token_RParen) :: (tok_helper input (pos + 1))	
-		
-		(* Discard whitespace if encountered in pos*)
-		else if (Str.string_match (Str.regexp "[ \\|\t\\|\n]")) input pos then 
-			(tok_helper input (pos+1))
 			
 		(* Invalid inputs such as strings and such *)
 		else raise (InvalidInputException "Invalid input");;
-		
 
 (* Converts all of input into a list of tokens *)
-let tokenize input = tok_helper input 0;;
+let tokenize input = tok_helper (strip_whitespace input) 0;;
 	

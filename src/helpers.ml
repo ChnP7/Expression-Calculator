@@ -18,3 +18,8 @@
 	| Token_Exp -> "^"
 	| Token_Int i -> string_of_int i
 	| Token_Float f -> string_of_float f
+	
+ 
+ (* Strips all whitespace from a string *)
+ let strip_whitespace input = 
+	Str.(global_replace (regexp "[ \\|\t\\|\n]") "" input)

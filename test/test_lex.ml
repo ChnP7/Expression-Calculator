@@ -14,13 +14,15 @@
  open OUnit2
  open Math.Lexer
  open Math.Tokentypes
+ open Printf
+ open Math.Helpers
  
  
- (* Helper to print out values 
+ (* Helper to print out values *)
  let rec print_vals list =
  match list with
  | h::t -> let () = printf " VAL: %s" (string_of_token h) in print_vals t
- | [] -> printf "eggs" *)
+ | [] -> printf "END" 
  
  
  
@@ -37,6 +39,12 @@
 	let expected = [Token_Int 2; Token_Plus; Token_Int 17] in
 	let  result = "2+17" |> tokenize in
 	assert_equal expected result ~msg:"basic2"
+	
+ (* Test: 2-17 *)
+ let basic4 _ = 
+	let expected = [Token_Int 2; Token_Minus; Token_Int 17] in
+	let  result = "2-17" |> tokenize in
+	assert_equal expected result ~msg:"basic4"
 	
  (* Test: 0 * 7 - 3 + 18 / 4 ^ 10 *)
  let basic3 _ = 
@@ -133,11 +141,26 @@
 	assert_raises (InvalidInputException "Invalid input") result ~msg:"decimal fail"
  
  (* Test: A decimal without a leading whole number e.g. .78 instead of 0.78 This should succeed. *)
-   let no_leading_decimal _ = 
+  let no_leading_decimal _ = 
     let expected = [Token_Float (0.78); Token_Mult; Token_Float (-0.1)] in
 	let result = ".78 * -.1" |> tokenize in
 	assert_equal expected result ~msg:"decimal fail"
 	
+ (* Test: A larger string *)
+ let larger _ = 
+	let expected = 
+		[Token_LParen; Token_LParen; Token_LParen; Token_Int 7; 
+		 Token_Minus; Token_Int 8; Token_RParen; Token_Exp;
+		 Token_Int 3; Token_Plus; Token_LParen; Token_Float (0.5);
+		 Token_Mult; Token_Int 2; Token_RParen; Token_RParen;
+		 Token_Div; Token_Int 9; Token_LParen; Token_Int 0;
+		 Token_Mult; Token_Int (-13); Token_Plus; Token_Int 8;
+		 Token_Minus; Token_Int 1; Token_Div; Token_LParen;
+		 Token_Float (-0.5); Token_RParen; Token_RParen; Token_RParen;
+		 Token_Plus; Token_Int 1] in
+	let  result = "(((7-8)^3 + (0.5 * 2)) / 9(0*-13 + 8 - 1 / (-.5))) + 1" |> tokenize in
+	let () = print_vals result in
+	assert_equal expected result ~msg:"larger"
 	
 	
 
@@ -150,6 +173,7 @@ let suite =
     "basic1" >:: basic1;
 	"basic2" >:: basic2;
 	"basic3" >:: basic3;
+	"basic4" >:: basic4;
 	"neg_int_basic" >:: neg_int_basic;
 	"neg_int" >:: neg_int;
 	"parenthesis" >:: parenthesis;
@@ -161,7 +185,8 @@ let suite =
 	"empty" >:: empty;
 	"string_fail" >:: string_fail;
 	"decimal_fail" >:: decimal_fail;
-	"no_leading_decimal" >:: no_leading_decimal
+	"no_leading_decimal" >:: no_leading_decimal;
+	"larger" >:: larger
   ]
 
 let _ =
