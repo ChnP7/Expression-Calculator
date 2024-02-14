@@ -5,7 +5,8 @@ Negative and positive integers (whole numbers) are supported, as well as floatin
 
 This includes a lexer and parser that are used to take apart individual tokens from the string input to form a structure that can be evaluated in the correct order.
 
-Written in OCaml and build using Dune. The test modules for this project use OUnit to test and assert correct expected outputs.
+Written in OCaml and build using Dune. The test modules for this project use OUnit to test and assert correct expected outputs. Inspired by an old lexer/parser/interpreter project
+I was assigned for a class.
 
 ## Example uses
 Input: `2+7` Output: `9`
