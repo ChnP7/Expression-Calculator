@@ -1,0 +1,4 @@
+(library
+  (name math)
+  (modules lexer tokentypes helpers)
+  (libraries str))
