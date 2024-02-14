@@ -123,7 +123,16 @@
 	
 	
  (* TODO: Test: String value -> Should raise an exception *)
-
+  let string_fail _ = 
+	let result = fun () -> "Nice" |> tokenize in
+	assert_raises (InvalidInputException "Invalid input") result ~msg:"string fail"
+ 
+ (* Test: "decimal typo" such as "5." -> Should raise an exception *)
+  let decimal_fail _ = 
+	let result = fun () -> "5." |> tokenize in
+	assert_raises (InvalidInputException "Invalid input") result ~msg:"decimal fail"
+ 
+ (* Test: A decimal without a leading whole number e.g. .78 instead of 0.78 This should succeed. *)
 	
 	
 	
@@ -146,7 +155,9 @@ let suite =
 	"test_float" >:: test_float;
 	"test_neg_float" >:: test_neg_float;
 	"whitespaces" >:: whitespaces;
-	"empty" >:: empty
+	"empty" >:: empty;
+	"string_fail" >:: string_fail;
+	"decimal_fail" >:: decimal_fail
   ]
 
 let _ =
