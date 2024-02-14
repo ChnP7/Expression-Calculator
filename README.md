@@ -8,6 +8,8 @@ This includes a lexer and parser that are used to take apart individual tokens f
 Written in OCaml and build using Dune. The test modules for this project use OUnit to test and assert correct expected outputs. Inspired by an old lexer/parser/interpreter project
 I was assigned for a class.
 
+Currently, only the lexer to convert input into tokens is finished so it is not functional yet.
+
 ## Example uses
 Input: `2+7` Output: `9`
 
