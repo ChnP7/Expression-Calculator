@@ -133,7 +133,10 @@
 	assert_raises (InvalidInputException "Invalid input") result ~msg:"decimal fail"
  
  (* Test: A decimal without a leading whole number e.g. .78 instead of 0.78 This should succeed. *)
-	
+   let no_leading_decimal _ = 
+    let expected = [Token_Float (0.78); Token_Mult; Token_Float (-0.1)] in
+	let result = ".78 * -.1" |> tokenize in
+	assert_equal expected result ~msg:"decimal fail"
 	
 	
 	
@@ -157,7 +160,8 @@ let suite =
 	"whitespaces" >:: whitespaces;
 	"empty" >:: empty;
 	"string_fail" >:: string_fail;
-	"decimal_fail" >:: decimal_fail
+	"decimal_fail" >:: decimal_fail;
+	"no_leading_decimal" >:: no_leading_decimal
   ]
 
 let _ =

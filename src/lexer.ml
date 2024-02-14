@@ -16,7 +16,7 @@ let rec tok_helper input pos =
 	else
 		
 		(* Case: Floating point *)
-		if (Str.string_match (Str.regexp "-?[0-9]+[.][0-9]+")) input pos then
+		if (Str.string_match (Str.regexp "-?[0-9]*[.][0-9]+")) input pos then
 			let tok = (Str.matched_string input) in
 			let len = (String.length tok) in
 			let num = float_of_string tok in
