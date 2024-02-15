@@ -14,18 +14,6 @@
  open OUnit2
  open Math.Lexer
  open Math.Tokentypes
- open Printf
- open Math.Helpers
- 
- 
- (* Helper to print out values *)
- let rec print_vals list =
- match list with
- | h::t -> let () = printf " VAL: %s" (string_of_token h) in print_vals t
- | [] -> printf "END" 
- 
- 
- 
  
  
  (* Test: + *)
@@ -159,7 +147,6 @@
 		 Token_Float (-0.5); Token_RParen; Token_RParen; Token_RParen;
 		 Token_Plus; Token_Int 1] in
 	let  result = "(((7-8)^3 + (0.5 * 2)) / 9(0*-13 + 8 - 1 / (-.5))) + 1" |> tokenize in
-	let () = print_vals result in
 	assert_equal expected result ~msg:"larger"
 	
 	

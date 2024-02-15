@@ -6,8 +6,6 @@
 
 open Tokentypes
 open Helpers
-
-exception InvalidInputException of string
 		
 
 let rec tok_helper input pos =

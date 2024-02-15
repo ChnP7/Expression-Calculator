@@ -1,4 +1,4 @@
 (library
   (name math)
-  (modules lexer tokentypes helpers)
+  (modules lexer parser tokentypes treetype helpers)
   (libraries str))

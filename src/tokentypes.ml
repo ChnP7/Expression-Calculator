@@ -1,4 +1,4 @@
-
+exception InvalidInputException of string
 
 type token = 
 	| Token_LParen
