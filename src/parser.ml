@@ -23,10 +23,10 @@
 	 
  and parse_add_sub tokens = 
 	let (tail, e1) = parse_vals tokens in (*Evaluate left-hand side first*)
-	match lookahead tail with (* Determine middle: if add or sub *)
-	| Some (Token_Plus) -> 	let tail2 = match_token tail Token_Plus in
-							let (tail3, e2) = parse_add_sub tail2 in
-							(tail3, Binop(Add, e1, e2))
+	match lookahead tail with (* Determine op: if add or sub *)
+	| Some (Token_Plus) -> 	let tail2 = match_token tail Token_Plus in (* tail2 = Tok_Plus removed (it was expected token) *)
+							let (tail3, e2) = parse_add_sub tail2 in (* now eval right hand *)
+							(tail3, Add(e1, e2)) (* Return (remaining tokens, Add(x + y))) *)
 	| _ -> (tail, e1)
  
  

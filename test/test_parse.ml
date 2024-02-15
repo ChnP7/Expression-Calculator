@@ -27,14 +27,14 @@
  
  (* Test: 1 + 5 -> Binop(Add, 1, 5) *)
  let op1 _ =
-	let expected = ([], Binop(Add, Value(Int 1), Value (Int 5))) in
+	let expected = ([], Add(Value(Int 1), Value (Int 5))) in
 	let result = "1 + 5" |> tokenize |> parse in
 	assert_equal expected result ~msg:"op1"
 	
  (* Test: More than one add *)
  let multiple_adds _ =
-	let expected = ([], Binop(Add, Value (Int 1), 
-		Binop(Add, Value (Int 2), Binop (Add, Value (Int 3), Value (Int 4))))) in
+	let expected = ([], Add(Value (Int 1), 
+		Add(Value (Int 2), Add(Value (Int 3), Value (Int 4))))) in
 	let result = "1 + 2+3+ 4" |> tokenize |> parse in
 	assert_equal expected result ~msg:"multiple_adds"
 	
