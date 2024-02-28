@@ -64,6 +64,27 @@
 	let result = "1 + 3 * 4 - 12" |> tokenize |> parse in
 	assert_equal expected result ~msg:"pemdas1"
 	
+ (* Another order of operations test, with exponent and div included *)
+ let pemdas2 _ = 
+	let expected = ([],
+	Add(
+		Sub (
+			Value (Int 3),
+			Div (
+				Mult (
+					Value (Int 1),
+					Value (Int 7)
+				),
+				Value (Int 16)
+			)
+		),
+		Exp (
+			Value (Int 3),
+			Value (Int 2)
+		)
+	)) in
+	let result = "3 - 1 * 7 / 16 + 3 ^ 2" |> tokenize |> parse in
+	assert_equal expected result ~msg:"pemdas2"
 	
  (* Test minus paired with a negative number *)
  let minus_neg _ = 
@@ -98,6 +119,21 @@
 	let result = "5 - 4 - 3 - 2 - 1.1 - 0" |> tokenize |> parse in
 	assert_equal expected result ~msg:"left_to_right"
 	
+ (* Test basic exponent parsing *)
+ let exp _ = 
+	let expected = ([],
+	Add(
+		Value (Int 1),
+		Exp (
+			Value (Int 2),
+			Value (Int 5)
+		)
+	)) in
+	let result = "1 + 2^5" |> tokenize |> parse in
+	assert_equal expected result ~msg:"exp"
+	
+ 
+	
 	
 	
 (* For OUnit2 testing *)
@@ -109,7 +145,9 @@ let suite =
 	"multiple_adds" >:: multiple_adds;
 	"pemdas1" >:: pemdas1;
 	"minus_neg" >:: minus_neg;
-	"left_to_right" >:: left_to_right
+	"left_to_right" >:: left_to_right;
+	"exp" >:: exp;
+	"pemdas2" >:: pemdas2
   ]
 
 let _ =

@@ -36,7 +36,7 @@
 	| _ -> (tail, e1)
 	
  and parse_mult_div tokens = 
-	let (tail, e1) = parse_vals tokens in 
+	let (tail, e1) = parse_exp tokens in 
 	match lookahead tail with 
 	| Some (Token_Mult) -> 	let tail2 = match_token tail Token_Mult in
 							let (tail3, e2) = parse_mult_div tail2 in
@@ -47,6 +47,16 @@
 							(tail3, Div(e2, e1))
 							
 	| _ -> (tail, e1)
+	
+ and parse_exp tokens = 
+	let (tail, e1) = parse_vals tokens in
+	match lookahead tail with
+	| Some (Token_Exp) -> 	let tail2 = match_token tail Token_Exp in
+							let (tail3, e2) = parse_exp tail2 in
+							(tail3, Exp(e2, e1))
+	
+	| _ -> (tail, e1)
+	
  
  and parse_vals tokens = 
 	match lookahead tokens with
