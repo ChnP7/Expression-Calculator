@@ -22,13 +22,30 @@
 	 parse_add_sub tokens
 	 
  and parse_add_sub tokens = 
-	let (tail, e1) = parse_vals tokens in (*Evaluate left-hand side first*)
+	let (tail, e1) = parse_mult_div tokens in (*Evaluate left-hand side first*)
 	match lookahead tail with (* Determine op: if add or sub *)
 	| Some (Token_Plus) -> 	let tail2 = match_token tail Token_Plus in (* tail2 = Tok_Plus removed (it was expected token) *)
 							let (tail3, e2) = parse_add_sub tail2 in (* now eval right hand *)
 							(tail3, Add(e1, e2)) (* Return (remaining tokens, Add(x + y))) *)
+							
+	| Some (Token_Minus) -> let tail2 = match_token tail Token_Minus in
+							let (tail3, e2) = parse_add_sub tail2 in
+							(tail3, Sub(e1, e2))
+							
 	| _ -> (tail, e1)
- 
+	
+ and parse_mult_div tokens = 
+	let (tail, e1) = parse_vals tokens in 
+	match lookahead tail with 
+	| Some (Token_Mult) -> 	let tail2 = match_token tail Token_Mult in
+							let (tail3, e2) = parse_mult_div tail2 in
+							(tail3, Mult(e1, e2))
+							
+	| Some (Token_Div) -> 	let tail2 = match_token tail Token_Div in
+							let (tail3, e2) = parse_mult_div tail2 in
+							(tail3, Div(e1, e2))
+							
+	| _ -> (tail, e1)
  
  and parse_vals tokens = 
 	match lookahead tokens with

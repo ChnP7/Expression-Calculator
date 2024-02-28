@@ -38,7 +38,7 @@
 	match tokens with
 	| [] -> raise (InvalidInputException("Cannot have an empty token list!"))
 	| h::t when h = token_to_match -> t
-	| _ -> raise (InvalidInputException("Unexpected input"))
+	| _ -> raise (InvalidInputException("Expected the correct operation"))
 	
 	
 (* Helper to print out token values *)

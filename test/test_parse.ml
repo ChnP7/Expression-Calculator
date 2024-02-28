@@ -38,7 +38,7 @@
 	let result = "1 + 2+3+ 4" |> tokenize |> parse in
 	assert_equal expected result ~msg:"multiple_adds"
 	
-(* Test: (5 / 5) - 1 -> Binop (Sub, Binop(Div, 5, 5), 1) *)
+ 
  let op2 _ =
 	let expected = [Token_Plus] in
 	let result = "+" |> tokenize in
