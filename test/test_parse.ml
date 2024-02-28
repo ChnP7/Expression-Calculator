@@ -7,7 +7,6 @@
  **********************************************)
  
  open OUnit2
- open Math.Tokentypes
  open Math.Treetype
  open Math.Lexer
  open Math.Parser
@@ -25,7 +24,7 @@
 	let result = "-16.5" |> tokenize |> parse in
 	assert_equal expected result ~msg:"single_neg_float"
  
- (* Test: 1 + 5 -> Binop(Add, 1, 5) *)
+ (* Test: 1 + 5 -> Add(1, 5) *)
  let op1 _ =
 	let expected = ([], Add(Value(Int 1), Value (Int 5))) in
 	let result = "1 + 5" |> tokenize |> parse in
@@ -33,16 +32,71 @@
 	
  (* Test: More than one add *)
  let multiple_adds _ =
-	let expected = ([], Add(Value (Int 1), 
-		Add(Value (Int 2), Add(Value (Int 3), Value (Int 4))))) in
+	let expected = ([], 
+	Add (
+		Add(
+			Add(
+				Value(Int 1),
+				Value(Int 2)
+			),
+			Value(Int 3)
+		),
+		Value(Int 4)
+	)) in
 	let result = "1 + 2+3+ 4" |> tokenize |> parse in
 	assert_equal expected result ~msg:"multiple_adds"
+
 	
- 
- let op2 _ =
-	let expected = [Token_Plus] in
-	let result = "+" |> tokenize in
-	assert_equal expected result ~msg:"op2"
+	
+ (* Test order of operations. AST must have Mult(3*4) bottom most of tree *)
+ let pemdas1 _ = 
+	let expected = ([],
+	Sub(
+		Add(
+			Value (Int 1),
+			Mult(
+				Value (Int 3),
+				Value (Int 4)
+			)
+		),
+		Value (Int 12)
+	)) in
+	let result = "1 + 3 * 4 - 12" |> tokenize |> parse in
+	assert_equal expected result ~msg:"pemdas1"
+	
+	
+ (* Test minus paired with a negative number *)
+ let minus_neg _ = 
+	let expected = ([],
+	Sub(
+		Value (Int 1),
+		Value (Int (-2))
+	)) in
+	let result = "1 -- 2" |> tokenize |> parse in
+	assert_equal expected result ~msg:"minus negative"
+	
+	
+ (* Test correct ordering of values with same priority. Should go left -> right *)
+ let left_to_right _ = 
+	let expected = ([],
+	Sub(
+		Sub(
+			Sub(
+				Sub(
+					Sub(
+						Value (Int 5),
+						Value (Int 4)
+					),
+					Value (Int 3)
+				),
+				Value (Int 2)
+			),
+			Value (Float 1.1)
+		),
+		Value (Int 0)
+	)) in
+	let result = "5 - 4 - 3 - 2 - 1.1 - 0" |> tokenize |> parse in
+	assert_equal expected result ~msg:"left_to_right"
 	
 	
 	
@@ -52,8 +106,10 @@ let suite =
 	"single_int" >:: single_int;
 	"single_neg_float" >:: single_neg_float;
     "op1" >:: op1;
-	"op2" >:: op2;
-	"multiple_adds" >:: multiple_adds
+	"multiple_adds" >:: multiple_adds;
+	"pemdas1" >:: pemdas1;
+	"minus_neg" >:: minus_neg;
+	"left_to_right" >:: left_to_right
   ]
 
 let _ =

@@ -27,7 +27,7 @@
 	match lookahead tail with (* Determine op: if add or sub *)
 	| Some (Token_Plus) -> 	let tail2 = match_token tail Token_Plus in (* tail2 = Tok_Plus removed (it was expected token) *)
 							let (tail3, e2) = parse_add_sub tail2 in (* recursively eval right-hand *)
-							(tail3, Add(e1, e2)) (* Return (remaining tokens, Add(x + y))) *)
+							(tail3, Add(e2, e1)) (* Return (remaining tokens, Add(x + y))) *)
 							
 	| Some (Token_Minus) -> let tail2 = match_token tail Token_Minus in
 							let (tail3, e2) = parse_add_sub tail2 in
@@ -40,11 +40,11 @@
 	match lookahead tail with 
 	| Some (Token_Mult) -> 	let tail2 = match_token tail Token_Mult in
 							let (tail3, e2) = parse_mult_div tail2 in
-							(tail3, Mult(e1, e2))
+							(tail3, Mult(e2, e1))
 							
 	| Some (Token_Div) -> 	let tail2 = match_token tail Token_Div in
 							let (tail3, e2) = parse_mult_div tail2 in
-							(tail3, Div(e1, e2))
+							(tail3, Div(e2, e1))
 							
 	| _ -> (tail, e1)
  
