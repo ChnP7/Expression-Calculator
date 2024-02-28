@@ -57,13 +57,20 @@
 	
 	| _ -> (tail, e1)
 	
- 
+ (* Highest-priority expressions: values int & float, and exprs in parenthesis *)
  and parse_vals tokens = 
 	match lookahead tokens with
-	| Some (Token_Int i) -> let tail = match_token tokens (Token_Int i) in
-							(tail, Value(Int i))
+	| Some (Token_Int i) -> 	let tail = match_token tokens (Token_Int i) in
+								(tail, Value(Int i))
+								
 	| Some (Token_Float f) -> 	let tail = match_token tokens (Token_Float f) in
 								(tail, Value(Float f))
+								
+	| Some (Token_RParen) -> 	let tail = match_token tokens Token_RParen in
+								let (tail2, expr) = parse_add_sub tail in 
+								let tail3 = match_token tail2 Token_LParen in (* Ensure matching parenthesis *)
+								(tail3, expr)
+	
 	| _ -> raise (InvalidInputException "Expected a integer or decimal")
 	
 
