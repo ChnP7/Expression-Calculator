@@ -17,20 +17,21 @@
  open Treetype
  open Helpers
 	
- 
+ (* Token list is reversed to preserver order of operations left-to-right order
+  * expression. E.g. "3 - 2 - 1" must have 3 - 2 first before subtracting 1 *)
  let rec parse tokens = 
-	 parse_add_sub tokens
+	 parse_add_sub (List.rev tokens)
 	 
  and parse_add_sub tokens = 
-	let (tail, e1) = parse_mult_div tokens in (*Evaluate left-hand side first*)
+	let (tail, e1) = parse_mult_div tokens in (*Evaluate left-hand side of operand first*)
 	match lookahead tail with (* Determine op: if add or sub *)
 	| Some (Token_Plus) -> 	let tail2 = match_token tail Token_Plus in (* tail2 = Tok_Plus removed (it was expected token) *)
-							let (tail3, e2) = parse_add_sub tail2 in (* now eval right hand *)
+							let (tail3, e2) = parse_add_sub tail2 in (* recursively eval right-hand *)
 							(tail3, Add(e1, e2)) (* Return (remaining tokens, Add(x + y))) *)
 							
 	| Some (Token_Minus) -> let tail2 = match_token tail Token_Minus in
 							let (tail3, e2) = parse_add_sub tail2 in
-							(tail3, Sub(e1, e2))
+							(tail3, Sub(e2, e1))
 							
 	| _ -> (tail, e1)
 	
