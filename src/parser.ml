@@ -11,6 +11,8 @@
  * Then the recursive calls come back 
  * value -> exp -> mult_div -> add_sub
  *
+ * TODO: More detailed error messages & fix missing parenthesis error catching
+ *
  ***********************************************)
  
  open Tokentypes

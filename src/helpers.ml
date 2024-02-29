@@ -47,4 +47,11 @@
 	| h::t -> let () = printf " VAL: %s" (string_of_token h) in print_vals t
 	| [] -> printf "END" 
 	
+ (* Exponent function: finds x to the power of p *)
+ let rec pow x p =
+	match p with
+	| 0 -> 1
+	| 1 -> x
+	| _ -> x * (pow x (p-1))
+	
 	
