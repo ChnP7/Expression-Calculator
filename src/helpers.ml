@@ -48,10 +48,10 @@
 	| [] -> printf "END" 
 	
  (* Exponent function: finds x to the power of p *)
- let rec pow x p =
+ let rec pow (x: float) p =
 	match p with
-	| 0 -> 1
+	| 0 -> 1.0
 	| 1 -> x
-	| _ -> x * (pow x (p-1))
+	| _ -> x *. (pow x (p-1))
 	
 	
