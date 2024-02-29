@@ -82,6 +82,16 @@
 	let result = "3(5) - (4 + 1)(2)" |> tokenize |> parse |> eval in
 	assert_equal expected result ~msg:"parenthesis"
  
+ (* Test if an implicit negative one outside of parenthesis is properly handled *)
+ let neg_parenthesis _ = 
+	let expected = -20.0 in
+	let result = "-(7 + 3) * 2" |> tokenize |> parse |> eval in
+	assert_equal expected result ~msg:"neg_parenthesis"
+
+ let mult_parenthesis _ =
+	let expected = 10.0 in
+	let result = "(8 - 3)(3-1)" |> tokenize |> parse |> eval in
+	assert_equal expected result ~msg:"mult_parenthesis"
  
  (* For OUnit2 testing *)
 let suite =
@@ -97,7 +107,9 @@ let suite =
 	"eval_pemdas1" >:: eval_pemdas1;
 	"eval_pemdas2" >:: eval_pemdas2;
 	"eval_pemdas3" >:: eval_pemdas3;
-	"parenthesis" >:: parenthesis
+	"parenthesis" >:: parenthesis;
+	"neg_parenthesis" >:: neg_parenthesis;
+	"mult_parenthesis" >:: mult_parenthesis
   ]
 
 let _ =

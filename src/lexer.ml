@@ -15,9 +15,10 @@ let rec tok_helper input pos =
 			
 		(* Case: minus sign. Since minus and negative share the same symbol, a character will be a minus token if 
 		 * 1. The - character is not the first character in the string
-		 * 2. The - character comes after a number character [0-9] 
+		 * 2. The - character comes after a number character [0-9] or RParenthesis )
 		 * Otherwise, it will be treated as a negative number symbol *)
-		if (Str.string_match (Str.regexp "-")) input pos && pos != 0  && (Str.string_match (Str.regexp "[0-9]") input (pos-1)) then
+		if (Str.string_match (Str.regexp "-")) input pos && pos != 0  
+		&& (Str.string_match (Str.regexp "[0-9|)]") input (pos-1)) then
 			(Token_Minus) :: (tok_helper input (pos + 1))
 			
 		(* Case: Floating point *)
@@ -33,6 +34,12 @@ let rec tok_helper input pos =
 			let len = (String.length tok) in
 			let num = int_of_string tok in
 			(Token_Int num) :: (tok_helper input (pos + len))
+			
+		(* Special Case: negating in parenthesis e.g. -(3+3) *)
+		else if (Str.string_match (Str.regexp "-(")) input pos then
+			(Token_Int (-1)) :: (Token_LParen) :: (tok_helper input (pos + 2))
+			
+		
 		
 		(* Case: plus sign *)
 		else if (Str.string_match (Str.regexp "\\+")) input pos then 
