@@ -71,7 +71,13 @@
 	| Some (Token_RParen) -> 	let tail = match_token tokens Token_RParen in
 								let (tail2, expr) = parse_add_sub tail in 
 								let tail3 = match_token tail2 Token_LParen in (* Ensure matching parenthesis *)
-								(tail3, expr)
+								(* If no operator between number and parenthesis, assume multiplication e.g. 2(3) *)
+								(match lookahead tail3 with 
+								| Some (Token_Int _) -> 		(Token_Mult::tail3, expr)
+								| Some (Token_Float _) ->		(Token_Mult::tail3, expr)
+								| Some (Token_RParen) ->		(Token_Mult::tail3, expr)
+								| _ -> 					(tail3, expr))
+								
 	
 	| _ -> raise (InvalidInputException "Expected a integer or decimal")
 	
